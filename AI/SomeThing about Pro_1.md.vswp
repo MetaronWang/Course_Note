@@ -1,0 +1,6 @@
+vnote_backup_file_826537664 /home/metaron/文档/vnote_notebooks/Course_Note/AI/SomeThing about Pro_1.md
+# SomeThing about Pro_1
+
+##
+二维的list去定义棋盘
+子list中的元素用一个结构体, 成员变量有: 颜色(黑白空)

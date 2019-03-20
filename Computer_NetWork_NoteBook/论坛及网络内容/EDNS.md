@@ -1,0 +1,55 @@
+<div id="cnblogs_post_body" class="blogpost-body"><p>　　随着业务的复杂化和多样化，RFC1035中定义的DNS消息格式和它支持的消息内容已经不足以满足一些DNS服务器的需求，于是，RFC2671中提出了一种扩展DNS机制EDNS(Extension Mechanisms for DNS)，并在其中推荐了一种传递包大小的EDNS0。我将EDNS0中的一些关键内容总结在这篇文章中，以便日后翻阅，同时希望能够帮助到像我这样迷茫过的、探寻EDNS很久才知道其概貌的新人。</p>
+<h2>&nbsp; &nbsp; 一<strong>，什么是EDNS？</strong></h2>
+<p><strong>&nbsp; &nbsp; &nbsp;</strong>EDNS就是在遵循已有的<a href="http://www.cnblogs.com/cobbliu/archive/2013/04/02/2996333.html" target="_blank">DNS消息格式</a>的基础上增加一些字段，来支持更多的DNS请求业务。</p>
+<p>&nbsp; &nbsp; &nbsp;需要注意的是，像DNS服务器这样一个大型且广泛应用的系统软件，新增加扩展协议的时候一定要考虑到向后兼容性(backward compatibility)，即你增加了你这个特性的消息传输给未支持该特性的服务器时，后者依然能正确处理。</p>
+<h2>&nbsp; &nbsp; 二<strong>，为什么要有EDNS？</strong></h2>
+<p><strong>&nbsp; &nbsp; &nbsp;&nbsp;</strong>RFC2671中指出EDNS被提出来的几个理由：</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;1）DNS协议头部的<a href="http://www.cnblogs.com/cobbliu/archive/2013/04/02/2996333.html" target="_blank">第二个16字节</a>中都已经被用的差不多了，需要添加新的返回类型(RCODE)和标记(FLAGS)来支持其他需求；</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;2）只为标示domain类型的标签分配了两位，现在已经用掉了两位（00标示字符串类型，11表示压缩类型），后面如果有更多的标签类型则无法支持；</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;3）当初DNS协议中设计的用UDP包传输时包大小限制为512字节，现在很多主机已经具备重组大数据包的能力，所以要有一种机制来允许DNS请求方通知DNS服务器让其返回大包；</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 以后我们会看到，DNSSEC机制和edns-client-subnet机制等都需要有EDNS的支持。</p>
+<h2>&nbsp; &nbsp; &nbsp;三<strong>，EDNS的内容是什么？</strong></h2>
+<p><strong>&nbsp; &nbsp; &nbsp; &nbsp; </strong>怎样在DNS消息协议的基础上再增加一些字段呢？为了保持向后兼容性，更改已有的DNS协议格式是不可能的，所以只能在DNS协议的数据部分中做文章。</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; 所以，EDNS中引入了一种新的伪资源记录OPT（Resource Record），之所以叫做伪资源记录是因为它不包含任何DNS数据，OPT RR不能被cache、不能被转发、不能被存储在zone文件中。OPT被放在DNS通信双方（requestor和responsor）DNS消息的<strong>Additional data</strong>区域中。</p>
+<h4>&nbsp; &nbsp; &nbsp; &nbsp; 1，OPT伪资源记录中的内容有哪些呢？</h4>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OPT pseudo-RR中的内容包含固定部分和可变部分。它的结构如下：</p>
+<p><img src="https://images0.cnblogs.com/blog/384029/201307/13205359-27a89af9661844fdbc2fe03f07d41be4.png" alt=""></p>
+<p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 图1 OPT内容</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; 图1中最下面的RDATA是可变部分，其余的部分都是固定部分：Name字段目前为空；TYPE字段是OPT RR的类型编号，IANA为其分配的是41（0x29）；TTL中是扩展的DNS消息头部，下面会有介绍；RDLEN是可变部分RDATA的长度；RDATA是KV类型的可变部分。</p>
+<p>&nbsp; &nbsp; &nbsp;原来的TTL字段被用来存储扩展消息头部中的RCODE和flags，它的格式如下：</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<img src="https://images0.cnblogs.com/blog/384029/201307/13205954-f8b3f9e9f5ec450bbbd762fe04dcdcb3.png" alt=""></p>
+<p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;图2&nbsp;extended RCODE and flags Detail</p>
+<p>&nbsp; &nbsp; &nbsp;图2中高位8个bit是扩展RCODE（返回状态码），这8个bit加上DNS头部的4bit总共有12bit（8bit在高位），这样就可以表示更多的返回类型；</p>
+<p>&nbsp; &nbsp; &nbsp; VERSOION字段表示EDNS的版本（EDNS根据支持不同的扩展内容会有很多版本），这篇文章提到的内容的VERSION=0</p>
+<p>&nbsp; &nbsp; &nbsp; RFC2671中Z一般情况下被发送者设置为0，接收方可以忽略它。但是后续的扩展协议中会用到这16bit。</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;OPT RR中可变部分RDATA的结构如下图所示：</p>
+<p><img src="https://images0.cnblogs.com/blog/384029/201307/13211212-20583da0d1234d50879584f3d8f26c66.png" alt=""></p>
+<p style="text-align: center;">图3 RDATA格式</p>
+<p style="text-align: left;">&nbsp; &nbsp; 图3中OPTION-CODE由IANA分配；OPTION-LENGTH是OPTION-DATA的长度；OPTION-DATA是具体长度。</p>
+<p style="text-align: left;">&nbsp; &nbsp; &nbsp; 上面三个图之间的关系用下图看或许会清晰一点：</p>
+<p style="text-align: left;"><img src="https://images0.cnblogs.com/blog/384029/201307/13215030-e24cb209de014830b58a5649b3457d43.png" alt="" width="709" height="433"></p>
+<p style="text-align: left;">　　 需要注意的是，每个DNS 消息中只能有一个OPT伪资源记录，当有多中EDNS扩展协议时，各个{attribute, value}对一个紧接一个存储在RDATA中。如下图所示</p>
+<p style="text-align: left;"><img src="https://images0.cnblogs.com/blog/384029/201310/20235057-45f556f9343f401db3b6835e5521ff1a.png" alt="">&nbsp; &nbsp;<img src="https://images0.cnblogs.com/blog/384029/201310/20235112-00e7d212d1f3468299b00a945f302c69.png" alt=""></p>
+<p style="text-align: left;"><span style="background-color: #000080; color: #ffffff;"><strong>可以看到当有NSID和CSUBNET的时候，两个RDATA紧密排列在OPT的RDATA字段中，它们两的总长度由Data length指定。</strong></span></p>
+<h3 style="text-align: left;">&nbsp; &nbsp; &nbsp; &nbsp; 2，example</h3>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;好苦涩的理论啊，我们拿一个实例看看EDNS0的格式吧！</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;我在自己的机器上用bind-9.8.1-p1中的dig请求Google首页，并把包大小参数设置为768:</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ./dig www.google.com.hk +bufsize=768</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;用tcpdump抓包，然后用ethereal查看UDP包的内容，下图是请求包的详细内容：</p>
+<p><img src="https://images0.cnblogs.com/blog/384029/201307/13212210-19b7eaae05424740adf38750ad3e130f.png" alt=""></p>
+<p style="text-align: center;">图4 request message</p>
+<p>&nbsp; &nbsp;图4中蓝色的是请求消息中的Additional data中的所有内容，我们可以看到有一个OPT RR，需要注意的是：</p>
+<p>&nbsp; &nbsp; &nbsp; 1）TTL字段中的extended RCODE、VERSION和Z被ethereal拆分来显示了；</p>
+<p style="text-align: left;">&nbsp; &nbsp; &nbsp; 2）RDATA length为0说明没有可变消息RDATA，从下面的消息中可以看到确实没有RDATA(...)</p>
+<p style="text-align: left;">&nbsp;</p>
+<p style="text-align: left;">&nbsp;下图是响应消息：</p>
+<p style="text-align: left;"><img src="https://images0.cnblogs.com/blog/384029/201307/13212904-e81939f631ba43aba7264a0998256f41.png" alt=""></p>
+<p style="text-align: center;">图5 response message</p>
+<p>图5中可以看出，Additional data中除了四个google权威域名服务器详细信息外还有OPT RR，响应消息包的大小为4096字节。</p>
+<h3>&nbsp; &nbsp; &nbsp; 3，Others</h3>
+<p>&nbsp; &nbsp; &nbsp; RFC2671中还包含了很多EDNS0实现时请求方和响应方注意的事项，以及EDNS0带来的问题，对它们感兴趣的可以移步<a href="http://www.ietf.org/rfc/rfc2671.txt" target="_blank">这里</a>。</p>
+<h2>&nbsp; &nbsp; &nbsp;四，参考文献</h2>
+<p>&nbsp; &nbsp; &nbsp; 1，RFC2671</p>
+<p>&nbsp; &nbsp; &nbsp; 2，维基百科 &nbsp;http://en.wikipedia.org/wiki/EDNS</p></div>

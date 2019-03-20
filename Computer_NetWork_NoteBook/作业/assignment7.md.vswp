@@ -1,0 +1,55 @@
+vnote_backup_file_826537664 C:/Users/wwzzy/OneDrive/Documents/Course_Note/Computer_NetWork_NoteBook/作业/assignment7.md
+![](../../_v_images/The_Logo_Of_Sustc.png)
+****
+
+<center><font face="微软雅黑" size="6">Assignment 7</font></center>
+<center><p>姓名：汪至圆 &nbsp; 学号11610634</p></center>
+
+#   7.1:
+##  1. using tracert (windows) / traceroute(linux or OS) to trace the route from your host to www.sustc.edu.cncapture the packets while tracing
+
+**I use '*my traceroute*' instead of the trouceroute**
+![](_v_images/_1542694691_1290486548.png)
+![](_v_images/_1542694738_230456796.png)
+
+### 1)  find the changes of ttl field of IP datagram with icmpecho request inside
+The ttl changed from 1 to 17.
+
+### 2)  Is there any ‘Time-to-live exceeded’ icmp packets? what’s the difference between these packets and normal icmp packets(such as icmp echo request)?
+There is 'Time-to-live; exceeded icmp packets. This packets set up the sign that the ttl is exceed, and it will show '?' in the My traceroute
+
+#   7.2:
+##  2. using pingplotter to trace the route to  www.sustc.edu.cn(setting the packet size is 3000B ), capture the packets while tracing. Set pingplotter to enable ‘IP packets fragmentation’ , set the packet size to be 3000B
+![](_v_images/_1542668565_26642.png)
+![](_v_images/_1542698269_18101.png)
+![](_v_images/_1542669290_22778.png)
+### Is there is any fragmentation on IP packets , how do you find it ?
+Yes, I find it by the packet I get by the wireshark.
+![](_v_images/_1542698345_32763.png)
+### How many fragments of a 3000B length IP packet ? 
+Three Fragments
+### While fraging, which fragment is the 1st one, which is the last ?  How do you identify them?
+Fragment 1 is the 1st one. Identify them by the payload, the 1st and 2nd packet must be full and larger than or equal to the last packet, and the 3rd packet has the least data, so the Fragment 1 is 1st one.
+### What’s the length of each IP fragment?  Is the fragmentation ok  or not ?
+Each fragment's length is 1480, 1480, 20.
+Ok, beacuse: $1480+1480+20+20(from ip) = 3000$
+
+#   7.3
+##  3. for a DHCP discovery packet
+![](_v_images/_1542719845_16683.png)
+![](_v_images/_1542719858_275.png)
+
+### what ‘s the source IP address? How to identify a host while there is no valid IP address? 
+*   The Source IP address is 0.0.0.0
+*   By sending the NAK packet to 0.0.0.0
+### What’s the destination IP address? What's type of IP address 255.255.255.255?
+255.255.255.255
+It's Boradcast Address.
+### What info items are required for a host if it need to contact with others in the Internet?
+![](_v_images/_1542722836_16291.png)
+The info items is in the Option 55
+### How do you find the Lease Time of a dynamic IP address? What’s the value of it? what type of DHCP packet could set this field?
+*   Find them in the Option 51.
+![](_v_images/_1542722907_27915.png)
+*   The value is 43200s = 12h.
+*   It's offer packet.

@@ -1,0 +1,44 @@
+{
+    "created_time": "2018-09-11T00:04:43Z",
+    "files": [
+        {
+            "attachment_folder": "",
+            "attachments": [
+            ],
+            "created_time": "2018-09-11T00:20:49Z",
+            "modified_time": "2018-09-17T15:21:10Z",
+            "name": "Lecture_0.md",
+            "tags": [
+            ]
+        },
+        {
+            "attachment_folder": "",
+            "attachments": [
+            ],
+            "created_time": "2018-09-17T15:27:34Z",
+            "modified_time": "2018-09-17T15:27:34Z",
+            "name": "Lecture_1.md",
+            "tags": [
+            ]
+        },
+        {
+            "attachment_folder": "",
+            "attachments": [
+            ],
+            "created_time": "2018-10-08T01:59:17Z",
+            "modified_time": "2018-10-08T01:59:17Z",
+            "name": "Chapter_2_3.md",
+            "tags": [
+            ]
+        }
+    ],
+    "sub_directories": [
+        {
+            "name": "论坛及网络内容"
+        },
+        {
+            "name": "作业"
+        }
+    ],
+    "version": "1"
+}
