@@ -22,20 +22,16 @@
             "name": "Computer_NetWork_NoteBook"
         },
         {
-            "name": "Embedded_System_&_Microprocessor_System"
-        },
-        {
             "name": "Information_theory_and_coding"
-        },
-        {
-            "name": "OOAD"
         },
         {
             "name": "Operating_System"
         },
         {
             "name": "Cloud_Computing"
-        }    
+        }
+    ],
+    "tags": [
     ],
     "version": "1"
 }
