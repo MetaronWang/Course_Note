@@ -16,7 +16,7 @@ Four Fundamental OS Concepts
 ### Thread:
 *   A sequential execution stream within process(Some times called a **"Lightweight process"**)
     *   Process still contains a single Address Space
-    *   No protection between threadsyHeap
+    *   No protection between threads Heap
 *   Multithreading: 一个程序是由多个不同的concurrent活动组成的
     *   Sometimes called multitasking as in Ada
 *   为何要有thread: 线程切换开销小(多个线程可以共享一个内存地址空间)
