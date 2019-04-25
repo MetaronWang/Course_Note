@@ -1,0 +1,136 @@
+![](../_v_images/The_Logo_Of_Sustc.png)
+
+---
+
+<center><font face="Source Code Variable" size="6">Lab 8</font></center>
+<center>姓名：汪至圆 &nbsp; 学号:11610634</center>
+
+---
+
+# Fundamental:
+
+## 1.What is Uniprogramming:
+
+- Have no translation or protection
+- Application always runs at same place in physical memory since only one application at a time.
+- Application can access any physical address
+- Application given illusion of dedicated machine by giving it reality of a dedicated machine
+- There are just two program in the memory, OS and user Application.
+
+## 2.What is the shortcoming of Uniprogramming:
+
+- All of the program need to be load into the memory.
+- Just run one program, this waste the resource.
+- May can't run under in the different OS.
+
+## 3.What is Multiprogramming:
+
+- Also no translation or protection
+- Allocate resource to more than one Application.
+
+## 4.What is the shortcoming of Multiprogramming:
+
+- Bugs in any program can cause other programs to crash or even the OS;
+- Will produce fragmentation
+
+## 5.What is the segmentation mechanism and its advantages & disadvantages:
+
+- Segmentation:
+  - Division of a computer's primary memory into segments.
+  - Logical View: multiple separate segments
+    - Typical: Code, Data, Stack
+    - Others: memory sharing, etc
+- Advantages:
+  - Make data more “logical”
+  - We can do much better on “protection”
+  - Reduce fragmentation
+- Disadvantages:
+  - As processes are loaded and removed from the memory, the free memory space is broken into little pieces, causing External fragmentation.
+  - Must fit variable-sized chunks into physical memory
+  - May move processes multiple times to fit everythin-=
+  - Limited options for swapping to disk
+
+## 6.What is the paging mechanism and its advantages & disadvantages:
+
+- Paging:
+  - Allocate physical memory in fixed size chunks (“pages”), Every chunk of physical memory is equivalent.
+- Advantages:
+  - Simple to implement
+  - Reduce external fragmentation
+- Disadvantages:
+  - Page table requires extra memory space
+  - Suffer from internal fragmentation
+
+# Memory management(based on the code):
+
+## 1.What kind of data structure is the memory block used for storage?
+
+- LinkedList
+
+## How to reduce the occurrence of internal fragmentation when allocating memory? Briefly explain why this method works.
+
+- Reduce the MIN_SLICE, which decide the the size the allocted_blocked more than the size it required.
+
+## What kind of strategy does the original program take to allocate memory? Briefly describe the benefits of doing so.
+
+- First-Fit:
+  - A chunk of data is put in the first available block of memory that is big enough for the data to fit.
+- Best-Fit:
+  - A chunk of data is put into the absolutely smallest available block of memory that can still fit the data.
+- Worst-Fit:
+  - A chunk of data is put into the largest available block of memory. This is the opposite of the Best-Fit algorithm
+
+# Code result, screenshot and your comments:
+## Test1:
+*    Change mem_size:
+![](_v_images/20190424105503060_1201330777.png)
+*    Cteate Process:
+![](_v_images/20190424105705454_2071066906.png)
+*    Delete Process:
+![](_v_images/20190424105755418_239037826.png)
+*    Delete Process:
+![](_v_images/20190424110034676_443571957.png)
+*    Exit
+![](_v_images/20190424110114022_1000543904.png)
+
+##    Test2
+*    Create Process:
+![](_v_images/20190424110505883_1287883722.png)
+*    Create Process(Failed, memory is not enough)
+![](_v_images/20190424110614013_11755043.png)
+*    Delete Process:
+![](_v_images/20190424110646687_2111982413.png)
+*    Delete Process(Failed, No that Process)
+![](_v_images/20190424110817507_1084830959.png)
+*    Exit
+![](_v_images/20190424110845594_1381630772.png)
+
+##    Test3:
+*    Set mem_size:
+![](_v_images/20190424110929148_483848294.png)
+*    Create process:
+![](_v_images/20190424111104281_1912972907.png)
+![](_v_images/20190424111122853_2061481648.png)
+*    Delete Process
+![](_v_images/20190424111202870_189352659.png)
+*    Create Process(Failed, No enough memory)
+![](_v_images/20190424111257216_1147446674.png)
+*    Delete Process:
+![](_v_images/20190424111335716_78107842.png)
+*    Exit
+![](_v_images/20190424111402136_1359391966.png)
+##    Test by myself for best_fit and worst_fit:
+*    Change to best_fit:
+![](_v_images/20190424111508525_1964746838.png)
+*    Create Process:
+![](_v_images/20190424111559754_325209561.png)
+*    Delete Process:
+![](_v_images/20190424111637058_980354552.png)
+*    Create Process
+![](_v_images/20190424111710371_1356225294.png)
+*    Change to worst_fit:
+![](_v_images/20190424111826494_1199439538.png)
+*    Delete process:
+![](_v_images/20190424111901709_1536384439.png)
+*    Create Process:
+![](_v_images/20190424111932391_1352038666.png)
