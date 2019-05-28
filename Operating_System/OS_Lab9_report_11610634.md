@@ -29,18 +29,41 @@
 
 - In theory, the optimal page-replacement algorithm is **MIN**, and prove it:
 
+  - When we use the MIN algorithm, we will replace the page which won't be used in the longest time.
+  - When one miss happened, let the page which need be repleaced by the MIN algorithm will be used after _n_ cycles.
+  - Suppose we replace the other pages. Then the page we choice will be used after _m_ cycles and m<n;
+    - Then we can know the miss cause by the replacement will happen earlier
+    - And the pages between _m_ and _n_ may happen other miss.
+  - So, the MIN is the optimal algorithm.
+
 - Can the FIFO page-replacement algorithm be improved? If yes, please provide a plan; If no, please give your proof.
   - Yes, we can improve it to O(1) complexity. When add and replacement, it's complexity is O(1), and I add a HashMap or a HashSet to storage the information of the cache, then the complexity of find can also reduce to O(1).
 - Can the LRU page-replacement algorithm be improved? If yes, please provide a plan; If no, please give your proof.
-  - Yes. We use a HashMap, it's value is index of the pages in the cache, the value is the address of the pages in the list. When hit, remove the pages hited to the head of the list, when miss and full, pop the tail of the list. Then the complexity can be O(1).
+  - Yes. We use a HashMap:
+    - It's value is index of the pages in the cache
+    - The value is the address of the pages in the list.
+    - When hit, remove the pages hited to the head of the list.
+    - When miss and full, pop the tail of the list.
+  - Then the complexity can be O(1).
 
+## 4.Program running result：
 
-##  4.Program running result：(hit percentage)
+### Hit percent:
 
-|Algorithm/tests|1.in|2.in|3.in|
-|:--:|:--:|:--:|:--:|
-|FIFO|11.98%|11.85%|82.36|
-|MIN|42.40%|43.27%|88.58|
-|LRU|11.76%|11.85%|82.39%|
-|Clock|11.93%|11.83%|82.38|
-|Second-Chance|11.85%|11.85%|82.39%|
+| Algorithm/tests |  1.in  |  2.in  |  3.in  |
+| :-------------: | :----: | :----: | :----: |
+|      FIFO       | 11.98% | 11.85% | 82.36% |
+|       MIN       | 42.40% | 43.27% | 88.58% |
+|       LRU       | 11.76% | 11.85% | 82.39% |
+|      Clock      | 11.93% | 11.83% | 82.38% |
+|  Second-Chance  | 11.85% | 11.85% | 82.39% |
+
+### Time:(Optimized by O3 when comparing)
+
+| Algorithm/tests |  1.in  |  2.in  |  3.in  |
+| :-------------: | :----: | :----: | :----: |
+|      FIFO       | 0.0039 | 0.0323 | 0.0130 |
+|       MIN       | 0.0246 | 0.2846 | 0.0683 |
+|       LRU       | 0.0025 | 0.0282 | 0.0227 |
+|      Clock      | 0.0019 | 0.0241 | 0.0178 |
+|  Second-Chance  | 0.0038 | 0.0434 | 0.0144 |
