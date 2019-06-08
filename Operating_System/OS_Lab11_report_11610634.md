@@ -25,7 +25,7 @@ $$
     &\text{For the extent in the extcs302fs, the length is 8 bits}\\
     &\text{We assume the block size is 4KBytes}\\
     &\therefore \text{The maximum file size for extcs302fs is:}\\
-    &\quad 2^8\times 4KBytes = 2^{10} KBytes = 1MBytes
+    &\quad (2^8-1)\times 4KBytes = 1020KBytes
 \end{aligned}
 $$
 
@@ -54,7 +54,8 @@ $$
     $$
 
 ### E. The Linux journaling file system writes the content of all modified disk blocks to the log. Your friend Bob considers such logging to be wasteful since copying the content of modified disk blocks to the log doubles the amount of disk writes for each logged file system operation. Bob decides to implement a more efficient journaling file system. In particular, he decides to only record an operation’s name and parameter in the log file instead of recording the content of all modified blocks. For example, for an operation that creates file “/d/f”, the file system would append the transaction record of the form [create “/d/f”] to the log. Bob’s file system ensures that the corresponding transaction record is written to the log before the modified disk blocks are flushed to disk. Upon crash and recovery, Bob’s file system re-executes the logged file system operations and truncates the log. Bob’s new logging mechanism is certainly more efficient since each transaction record is much smaller than that with Linux’s logging. Is his design also correct? Specifically, can it recover a file system correctly from crashes? Explain your reasoning and give concrete examples.
-
+*   Not correct.
+*   A action in filesystem like create or delete file need many steps if and crash happened when the action haven't finished, and the Bob's logging mechanism will be invalid. 
 
 ### F. Your friend suggests doubling the Pintos block size from 512 bytes to 1,024 bytes, since that means you will be able to reach twice as much data from the direct pointers (as a result, medium sized files could fit entirely within the direct region). Why might it be a bad idea to increase the block size?
 
